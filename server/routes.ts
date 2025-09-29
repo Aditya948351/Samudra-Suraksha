@@ -2,6 +2,19 @@ import type { Express } from "express";
 import { chatWithGemini, analyzeCoastlineData } from "./gemini";
 
 export function registerRoutes(app: Express) {
+  // Placeholder reports endpoint for offline sync
+  app.post("/api/reports", async (req, res) => {
+    try {
+      const reportData = req.body;
+      console.log("Report received:", reportData);
+      // TODO: Save to database
+      res.json({ success: true, id: Date.now() });
+    } catch (error) {
+      console.error("Report save error:", error);
+      res.status(500).json({ error: "Failed to save report" });
+    }
+  });
+
   // Gemini chat endpoint
   app.post("/api/chat", async (req, res) => {
     try {
