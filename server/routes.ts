@@ -1,15 +1,38 @@
 import type { Express } from "express";
-import { createServer, type Server } from "http";
-import { storage } from "./storage";
+import { chatWithGemini, analyzeCoastlineData } from "./gemini";
 
-export async function registerRoutes(app: Express): Promise<Server> {
-  // put application routes here
-  // prefix all routes with /api
+export function registerRoutes(app: Express) {
+  // Gemini chat endpoint
+  app.post("/api/chat", async (req, res) => {
+    try {
+      const { message, history } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
 
-  // use storage to perform CRUD operations on the storage interface
-  // e.g. storage.insertUser(user) or storage.getUserByUsername(username)
+      const response = await chatWithGemini(message, history);
+      res.json({ response });
+    } catch (error) {
+      console.error("Chat error:", error);
+      res.status(500).json({ error: "Failed to process chat message" });
+    }
+  });
 
-  const httpServer = createServer(app);
+  // Agent mode - coastline analysis endpoint
+  app.post("/api/analyze-coastline", async (req, res) => {
+    try {
+      const { query } = req.body;
+      
+      if (!query) {
+        return res.status(400).json({ error: "Query is required" });
+      }
 
-  return httpServer;
+      const response = await analyzeCoastlineData(query);
+      res.json({ response });
+    } catch (error) {
+      console.error("Analysis error:", error);
+      res.status(500).json({ error: "Failed to analyze coastline data" });
+    }
+  });
 }

@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import MapView from '@/components/MapView';
 import StatCard from '@/components/StatCard';
-import { FileText, CheckCircle, Radio, AlertTriangle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { FileText, CheckCircle, Radio, AlertTriangle, MessageSquare, Sparkles } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
 
 // TODO: Remove mock data - replace with real API calls
 const mockReports = [
@@ -58,8 +61,42 @@ const mockReports = [
   }
 ];
 
+const mockLiveMessages = [
+  {
+    id: '1',
+    message: 'High wave warning issued for Chennai coast',
+    severity: 'warning',
+    timestamp: new Date(Date.now() - 5 * 60 * 1000).toISOString()
+  },
+  {
+    id: '2',
+    message: 'Tsunami alert activated for Goa region',
+    severity: 'critical',
+    timestamp: new Date(Date.now() - 15 * 60 * 1000).toISOString()
+  },
+  {
+    id: '3',
+    message: 'Weather update: Moderate rainfall expected',
+    severity: 'info',
+    timestamp: new Date(Date.now() - 30 * 60 * 1000).toISOString()
+  }
+];
+
 export default function Dashboard() {
   const [selectedReport, setSelectedReport] = useState<any>(null);
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'info':
+        return 'bg-blue-500';
+      case 'warning':
+        return 'bg-yellow-500';
+      case 'critical':
+        return 'bg-red-500';
+      default:
+        return 'bg-gray-500';
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col">
@@ -95,16 +132,75 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Map Area */}
-      <div className="flex-1 relative">
-        <MapView 
-          reports={mockReports}
-          onReportClick={(report) => {
-            console.log('Report selected:', report);
-            setSelectedReport(report);
-          }}
-          showSocialHeatmap={true}
-        />
+      {/* Main Content Area */}
+      <div className="flex-1 flex gap-4 p-6 overflow-hidden">
+        {/* Map Card */}
+        <Card className="flex-1 overflow-hidden" data-testid="card-map">
+          <CardContent className="p-0 h-full">
+            <MapView 
+              reports={mockReports}
+              onReportClick={(report) => {
+                console.log('Report selected:', report);
+                setSelectedReport(report);
+              }}
+              showSocialHeatmap={true}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Side Panel */}
+        <div className="w-80 flex flex-col gap-4 overflow-auto">
+          {/* AI Help Card */}
+          <Card data-testid="card-ai-help">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Sparkles className="h-4 w-4 text-accent" />
+                AI Help for Citizens
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Get instant AI-powered assistance for reporting hazards:
+              </p>
+              <ul className="text-xs space-y-2 text-muted-foreground">
+                <li>📸 Capture and analyze hazard photos</li>
+                <li>📍 Auto-detect your location</li>
+                <li>🤖 AI-guided report submission</li>
+                <li>💬 Ask questions about coastal safety</li>
+              </ul>
+              <div className="pt-2">
+                <Badge className="bg-accent text-accent-foreground">
+                  ⚡ Powered by Gemini AI
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Live Messages */}
+          <Card data-testid="card-live-messages">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <MessageSquare className="h-4 w-4" />
+                Live Messages
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {mockLiveMessages.map(msg => (
+                <div key={msg.id} className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <Badge className={`${getSeverityColor(msg.severity)} text-white text-xs`}>
+                      {msg.severity.toUpperCase()}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(msg.timestamp), { addSuffix: true })}
+                    </span>
+                  </div>
+                  <p className="text-sm">{msg.message}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );

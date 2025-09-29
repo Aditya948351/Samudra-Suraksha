@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { MapPin, Camera, Upload } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { MapPin, Camera, Upload, Wifi, WifiOff } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface HazardReportFormProps {
   onSubmit?: (report: any) => void;
@@ -14,24 +16,109 @@ interface HazardReportFormProps {
 export default function HazardReportForm({ onSubmit }: HazardReportFormProps) {
   const [hazardType, setHazardType] = useState('');
   const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('Auto-detected: 13.0827°N, 80.2707°E');
+  const [location, setLocation] = useState('Detecting location...');
+  const [latitude, setLatitude] = useState(0);
+  const [longitude, setLongitude] = useState(0);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Get user's location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          setLatitude(lat);
+          setLongitude(lon);
+          setLocation(`Auto-detected: ${lat.toFixed(4)}°N, ${lon.toFixed(4)}°E`);
+        },
+        (error) => {
+          console.error('Geolocation error:', error);
+          setLocation('Location unavailable - using default');
+          setLatitude(13.0827);
+          setLongitude(80.2707);
+        }
+      );
+    }
+
+    // Listen for online/offline events
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.({
+    
+    const reportData = {
       hazardType,
       description,
       location,
+      latitude,
+      longitude,
       timestamp: new Date().toISOString()
-    });
-    setHazardType('');
-    setDescription('');
+    };
+
+    try {
+      // Save to offline storage using OfflineSync API
+      if ((window as any).OfflineSync) {
+        await (window as any).OfflineSync.saveReport(reportData);
+        
+        toast({
+          title: 'Report Saved',
+          description: isOnline 
+            ? 'Report saved and will be synced to server.' 
+            : 'Report saved offline. It will sync when connection is restored.',
+          variant: 'default'
+        });
+
+        // Also call the onSubmit callback if provided
+        onSubmit?.(reportData);
+
+        // Reset form
+        setHazardType('');
+        setDescription('');
+      } else {
+        // Fallback if OfflineSync is not available
+        onSubmit?.(reportData);
+        toast({
+          title: 'Report Submitted',
+          description: 'Your report has been submitted.',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save report:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to save report. Please try again.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
     <Card className="max-w-2xl mx-auto" data-testid="hazard-report-form">
       <CardHeader>
-        <CardTitle>Report Coastal Hazard</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>Report Coastal Hazard</CardTitle>
+          <Badge variant={isOnline ? 'default' : 'destructive'} className="flex items-center gap-1">
+            {isOnline ? <Wifi className="h-3 w-3" /> : <WifiOff className="h-3 w-3" />}
+            {isOnline ? 'Online' : 'Offline Mode'}
+          </Badge>
+        </div>
+        {!isOnline && (
+          <p className="text-sm text-muted-foreground mt-2">
+            You're offline. Your report will be saved locally and synced when connection is restored.
+          </p>
+        )}
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">

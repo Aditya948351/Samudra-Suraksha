@@ -6,6 +6,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import ThemeToggle from "@/components/ThemeToggle";
+import ChatbotButton from "@/components/ChatbotButton";
+import SyncButton from "@/components/SyncButton";
+import AgentModeMenu from "@/components/AgentModeMenu";
 import Dashboard from "@/pages/Dashboard";
 import Reports from "@/pages/Reports";
 import Analytics from "@/pages/Analytics";
@@ -47,6 +50,8 @@ function App() {
                   <h1 className="text-lg font-semibold">Coastal Hazard Monitoring</h1>
                 </div>
                 <div className="flex items-center gap-2">
+                  <SyncButton />
+                  <AgentModeMenu />
                   <Button asChild variant="default" size="sm" data-testid="button-report-hazard">
                     <Link href="/report-hazard">
                       <PlusCircle className="h-4 w-4 mr-2" />
@@ -62,6 +67,7 @@ function App() {
             </div>
           </div>
         </SidebarProvider>
+        <ChatbotButton />
         <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
