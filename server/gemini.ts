@@ -6,7 +6,16 @@ import { GoogleGenAI } from "@google/genai";
 //   - do not change this unless explicitly requested by the user
 
 // This API key is from Gemini Developer API Key, not vertex AI API Key
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || "" });
+// Prefer GOOGLE_API_KEY (Replit integration default) over GEMINI_API_KEY
+const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY || "";
+
+if (!apiKey) {
+  console.error("ERROR: Neither GOOGLE_API_KEY nor GEMINI_API_KEY is set. Gemini features will not work.");
+} else {
+  console.log(`[Gemini] Using API key from: ${process.env.GOOGLE_API_KEY ? 'GOOGLE_API_KEY' : 'GEMINI_API_KEY'}`);
+}
+
+const ai = new GoogleGenAI({ apiKey });
 
 export async function chatWithGemini(message: string, conversationHistory: any[] = []): Promise<string> {
   try {
