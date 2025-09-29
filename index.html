@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samudra Manthan - Ocean Hazard Dashboard</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/forms.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-top">
+            <div class="container">
+                <div class="logo-section">
+                    <!-- Logo placeholder - Replace src with actual logo -->
+                    <img src="https://github.com/Aditya948351/Used-Images/blob/main/Samudra%20Manthan.png?raw=true" alt="Samudra Manthan Logo" class="logo-placeholder" id="logoPlaceholder">
+                    <div class="logo-fallback">
+                        <span class="logo-icon">🌊</span>
+                    </div>
+                </div>
+                
+                <!-- Main Title -->
+                <h1 class="main-title">Samudra Manthan</h1>
+                
+                <!-- Navigation Menu -->
+                <nav class="main-nav" id="mainNav">
+                    <div class="nav-toggle" id="navToggle">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li class="nav-item">
+                            <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#reports" class="nav-link" data-section="reports">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Report Hazard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#map" class="nav-link" data-section="map">
+                                <i class="fas fa-map-marked-alt"></i>
+                                <span>Live Map</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#analytics" class="nav-link" data-section="analytics">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Analytics</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#alerts" class="nav-link" data-section="alerts">
+                                <i class="fas fa-bell"></i>
+                                <span>Alerts</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                
+                <!-- User Controls -->
+                <div class="user-controls">
+                    <div class="role-selector">
+                        <select id="userRole" class="role-select">
+                            <option value="citizen">👤 Citizen</option>
+                            <option value="official">🏛️ Official</option>
+                            <option value="analyst">📊 Analyst</option>
+                        </select>
+                    </div>
+                    <div class="language-selector">
+                        <select id="languageSelect" class="language-select">
+                            <option value="en">🇬🇧 English</option>
+                            <option value="hi">🇮🇳 हिंदी</option>
+                            <option value="ta">🇮🇳 தமிழ்</option>
+                            <option value="te">🇮🇳 తెలుగు</option>
+                        </select>
+                    </div>
+                    <div class="offline-status" id="offlineStatus">
+                        <i class="fas fa-wifi"></i>
+                        <span>Online</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Banner Image Section -->
+        <div class="banner-section">
+            <!-- Banner image placeholder - Replace src with actual banner -->
+            <img src="" alt="Ocean Dashboard Banner" class="banner-placeholder" id="bannerPlaceholder">
+            <div class="banner-overlay">
+                <div class="container">
+                    <h2 class="banner-subtitle">Ocean Hazard Monitoring & Analytics Platform</h2>
+                    <p class="banner-description">Real-time hazard reporting, analytics, and community insights</p>
+                    <div class="banner-actions">
+                        <button class="btn-primary" id="quickReportBtn">
+                            <i class="fas fa-plus"></i>
+                            Quick Report
+                        </button>
+                        <button class="btn-outline" id="viewMapBtn">
+                            <i class="fas fa-map"></i>
+                            View Map
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Section -->
+            <section class="content-section active" id="dashboardSection">
+                <!-- Dashboard Stats Overview -->
+                <div class="stats-section" id="statsSection">
+                    <div class="stats-grid">
+                        <div class="stat-card dynamic-card" data-role="all">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-value" id="activeHazards">0</div>
+                            <div class="stat-label">Active Hazards</div>
+                            <div class="stat-trend">+12% from last week</div>
+                        </div>
+                        <div class="stat-card dynamic-card" data-role="all">
+                            <div class="stat-icon">📊</div>
+                            <div class="stat-value" id="totalReports">0</div>
+                            <div class="stat-label">Total Reports</div>
+                            <div class="stat-trend">+8% from last week</div>
+                        </div>
+                        <div class="stat-card dynamic-card" data-role="official,analyst">
+                            <div class="stat-icon">🌊</div>
+                            <div class="stat-value" id="oceanAreas">0</div>
+                            <div class="stat-label">Monitored Areas</div>
+                            <div class="stat-trend">3 new areas added</div>
+                        </div>
+                        <div class="stat-card dynamic-card" data-role="all">
+                            <div class="stat-icon">👥</div>
+                            <div class="stat-value" id="activeUsers">0</div>
+                            <div class="stat-label">Active Users</div>
+                            <div class="stat-trend">+25% this month</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Main Grid -->
+                <div class="dashboard-grid">
+                    <!-- Recent Reports Section -->
+                    <section class="reports-overview card dynamic-card" data-role="all">
+                        <div class="section-header">
+                            <h3 class="section-title">Recent Hazard Reports</h3>
+                            <button class="btn-primary" id="addReportBtn">
+                                <i class="fas fa-plus"></i>
+                                Add Report
+                            </button>
+                        </div>
+                        <div class="reports-container" id="reportsContainer">
+                            <!-- Reports will be populated by JavaScript -->
+                        </div>
+                        <div class="section-footer">
+                            <button class="btn-secondary" id="viewAllReports">View All Reports</button>
+                        </div>
+                    </section>
+
+                    <!-- Quick Actions Panel -->
+                    <section class="quick-actions card dynamic-card" data-role="all">
+                        <div class="section-header">
+                            <h3 class="section-title">Quick Actions</h3>
+                        </div>
+                        <div class="actions-grid">
+                            <button class="action-btn" id="emergencyReportBtn">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>Emergency Report</span>
+                            </button>
+                            <button class="action-btn" id="routineReportBtn">
+                                <i class="fas fa-clipboard-list"></i>
+                                <span>Routine Report</span>
+                            </button>
+                            <button class="action-btn" id="photoReportBtn">
+                                <i class="fas fa-camera"></i>
+                                <span>Photo Report</span>
+                            </button>
+                            <button class="action-btn" id="offlineReportsBtn">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>Sync Offline (<span id="offlineCount">0</span>)</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Social Media Feed -->
+                    <section class="social-feed card dynamic-card" data-role="analyst,official">
+                        <div class="section-header">
+                            <h3 class="section-title">Social Media Trends</h3>
+                            <div class="refresh-btn" id="refreshSocial">🔄</div>
+                        </div>
+                        <div class="social-container" id="socialContainer">
+                            <!-- Social media content will be populated by JavaScript -->
+                        </div>
+                    </section>
+
+                    <!-- Real-time Alerts -->
+                    <section class="alerts-section card dynamic-card" data-role="all">
+                        <div class="section-header">
+                            <h3 class="section-title">Real-time Alerts</h3>
+                            <div class="alert-status">
+                                <span class="status-indicator active"></span>
+                                <span>Live</span>
+                            </div>
+                        </div>
+                        <div class="alerts-container" id="alertsContainer">
+                            <!-- Alerts will be populated by JavaScript -->
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <!-- Report Hazard Section -->
+            <section class="content-section" id="reportsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Report Ocean Hazard</h2>
+                    <p class="section-description">Help keep our oceans safe by reporting hazards and incidents</p>
+                </div>
+                
+                <div class="report-form-container">
+                    <form class="hazard-form" id="hazardForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="hazardType">Hazard Type *</label>
+                                <select id="hazardType" name="hazardType" required>
+                                    <option value="">Select hazard type</option>
+                                    <option value="tsunami">🌊 Tsunami Warning</option>
+                                    <option value="oil-spill">🛢️ Oil Spill</option>
+                                    <option value="marine-debris">🗑️ Marine Debris</option>
+                                    <option value="toxic-algae">🦠 Toxic Algae Bloom</option>
+                                    <option value="strong-current">🌀 Strong Current</option>
+                                    <option value="coastal-erosion">🏖️ Coastal Erosion</option>
+                                    <option value="marine-life">🐟 Marine Life Distress</option>
+                                    <option value="other">❓ Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="severity">Severity Level *</label>
+                                <select id="severity" name="severity" required>
+                                    <option value="">Select severity</option>
+                                    <option value="low">🟢 Low - Minor concern</option>
+                                    <option value="medium">🟡 Medium - Moderate risk</option>
+                                    <option value="high">🟠 High - Significant risk</option>
+                                    <option value="critical">🔴 Critical - Immediate danger</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="description">Description *</label>
+                                <textarea id="description" name="description" rows="4" 
+                                    placeholder="Describe the hazard in detail..." required></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="location">Location</label>
+                                <div class="location-input">
+                                    <input type="text" id="location" name="location" 
+                                        placeholder="Enter location or use GPS">
+                                    <button type="button" class="btn-outline" id="getLocationBtn">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        Use GPS
+                                    </button>
+                                </div>
+                                <div class="coordinates" id="coordinates" style="display: none;">
+                                    <small>Coordinates: <span id="coordsDisplay"></span></small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contactInfo">Contact Information</label>
+                                <input type="text" id="contactInfo" name="contactInfo" 
+                                    placeholder="Phone or email (optional)">
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="mediaUpload">Photos/Videos</label>
+                                <div class="media-upload" id="mediaUpload">
+                                    <input type="file" id="mediaFiles" name="mediaFiles" 
+                                        multiple accept="image/*,video/*" style="display: none;">
+                                    <div class="upload-area" id="uploadArea">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Click to upload or drag and drop</p>
+                                        <small>Images and videos up to 10MB each</small>
+                                    </div>
+                                    <div class="media-preview" id="mediaPreview"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn-secondary" id="saveDraftBtn">
+                                <i class="fas fa-save"></i>
+                                Save Draft
+                            </button>
+                            <button type="submit" class="btn-primary" id="submitReportBtn">
+                                <i class="fas fa-paper-plane"></i>
+                                Submit Report
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Offline Reports -->
+                <div class="offline-reports" id="offlineReports" style="display: none;">
+                    <h3>Offline Reports</h3>
+                    <div class="offline-list" id="offlineList"></div>
+                </div>
+            </section>
+
+            <!-- Live Map Section -->
+            <section class="content-section" id="mapSection">
+                <div class="section-header">
+                    <h2 class="section-title">Live Hazard Map</h2>
+                    <div class="map-controls">
+                        <button class="btn-outline" id="mapLayerBtn">
+                            <i class="fas fa-layer-group"></i>
+                            Layers
+                        </button>
+                        <button class="btn-outline" id="mapFilterBtn">
+                            <i class="fas fa-filter"></i>
+                            Filters
+                        </button>
+                        <button class="btn-outline" id="mapFullscreenBtn">
+                            <i class="fas fa-expand"></i>
+                            Fullscreen
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="map-container" id="mapContainer">
+                    <!-- Map integration placeholder - Replace with actual map service -->
+                    <div class="map-placeholder">
+                        <div class="map-placeholder-content">
+                            <span class="map-icon">🗺️</span>
+                            <h4>Interactive Map Loading...</h4>
+                            <p>Map integration placeholder - Connect to mapping service</p>
+                            <div class="map-features">
+                                <div class="feature">📍 Real-time hazard markers</div>
+                                <div class="feature">🔥 Hotspot clustering</div>
+                                <div class="feature">📊 Data filtering</div>
+                                <div class="feature">🌐 Multiple map layers</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Map Legend -->
+                <div class="map-legend">
+                    <h4>Legend</h4>
+                    <div class="legend-items">
+                        <div class="legend-item">
+                            <span class="legend-marker critical"></span>
+                            <span>Critical Hazards</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-marker high"></span>
+                            <span>High Risk</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-marker medium"></span>
+                            <span>Medium Risk</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-marker low"></span>
+                            <span>Low Risk</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section class="content-section" id="analyticsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Analytics & Insights</h2>
+                    <div class="analytics-controls">
+                        <select id="analyticsTimeframe">
+                            <option value="24h">Last 24 Hours</option>
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d">Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Hazard Trends</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-chart-line"></i>
+                            <p>Trend analysis chart</p>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>Geographic Distribution</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-map"></i>
+                            <p>Geographic heatmap</p>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>Social Media Sentiment</h3>
+                        <div class="sentiment-analysis" id="sentimentAnalysis">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-card">
+                        <h3>Response Times</h3>
+                        <div class="chart-placeholder">
+                            <i class="fas fa-clock"></i>
+                            <p>Response time metrics</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Alerts Section -->
+            <section class="content-section" id="alertsSection">
+                <div class="section-header">
+                    <h2 class="section-title">Alert Management</h2>
+                    <button class="btn-primary" id="createAlertBtn">
+                        <i class="fas fa-plus"></i>
+                        Create Alert
+                    </button>
+                </div>
+
+                <div class="alerts-management">
+                    <div class="alert-filters">
+                        <button class="filter-btn active" data-filter="all">All Alerts</button>
+                        <button class="filter-btn" data-filter="active">Active</button>
+                        <button class="filter-btn" data-filter="resolved">Resolved</button>
+                        <button class="filter-btn" data-filter="critical">Critical</button>
+                    </div>
+                    
+                    <div class="alerts-list" id="alertsList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Samudra Manthan</h4>
+                    <p>Ocean hazard monitoring platform for safer seas</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#dashboard">Dashboard</a></li>
+                        <li><a href="#reports">Report Hazard</a></li>
+                        <li><a href="#map">Live Map</a></li>
+                        <li><a href="#analytics">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Emergency</h4>
+                    <p>Coast Guard: 1554</p>
+                    <p>Emergency: 112</p>
+                    <p>Support: help@samudramanthan.in</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Samudra Manthan. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success/Error Messages -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- JavaScript Files -->
+    <script src="js/main.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/reports.js"></script>
+    <script src="js/analytics.js"></script>
+    <script src="js/offline.js"></script>
+    <script src="js/localization.js"></script>
