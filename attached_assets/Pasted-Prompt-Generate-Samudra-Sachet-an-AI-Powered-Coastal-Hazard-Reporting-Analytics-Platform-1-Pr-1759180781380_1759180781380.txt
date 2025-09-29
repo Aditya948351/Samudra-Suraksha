@@ -1,0 +1,129 @@
+Prompt: Generate "Samudra Sachet," an AI-Powered Coastal Hazard Reporting & Analytics Platform
+1. Project Vision & Goal
+Build a comprehensive, two-part software solution named "Samudra Sachet" for the Indian National Centre for Ocean Information Services (INCOIS). The platform's primary goal is to save lives and reduce damage along India's coastline by closing the information gap between official forecasts and real-time, on-the-ground events.
+
+It will consist of:
+
+A citizen-facing mobile app (for Android/iOS) for easy, offline-capable hazard reporting.
+
+An official-facing web dashboard for data visualization, verification, and response coordination.
+
+The platform’s core innovation is its Hybrid Intelligence Engine, which fuses citizen-submitted reports with AI-driven social media analysis to provide a verified, real-time view of coastal hazards.
+
+2. Core Personas & Roles
+Citizen / Volunteer: Uses the mobile app to report observed hazards (e.g., unusual tides, flooding). They need a simple, fast, reliable, and multilingual interface that works even with poor or no internet connectivity.
+
+INCOIS Official / Disaster Manager (Admin): Uses the web dashboard to monitor incoming data, verify reports, identify emerging hotspots, analyze trends, and issue targeted alerts. They need a powerful, data-rich, and intuitive interface for quick decision-making.
+
+General Public: Can receive public safety alerts pushed by the admins through the mobile app.
+
+3. Key Features & Functionalities (by Architectural Layer)
+Layer 1: Citizen Mobile App (Target: Flutter or Kotlin)
+User Interface:
+
+Extremely simple, icon-driven UI with large tap targets.
+
+Multilingual Support: Must support English, Hindi, and key coastal languages (e.g., Tamil, Bengali, Marathi).
+
+Hazard Reporting:
+
+A prominent "Report Hazard" button.
+
+The form should include:
+
+A dropdown of hazard types (e.g., High Waves, Coastal Flooding, Tsunami Sighting, Abnormal Tide).
+
+A simple text field for a short description.
+
+Photo and/or short video upload functionality.
+
+Automatic Data Capture: Geotag (latitude/longitude) and timestamp must be captured automatically and attached to the report.
+
+Critical Feature: Offline-First Capability:
+
+Reports created without an internet connection must be saved locally on the device (e.g., using SQLite).
+
+The user must be able to see their pending reports in a dedicated "Outbox" or "Pending Sync" section with a clear "waiting for network" status.
+
+The app must automatically detect network availability and sync the pending reports to the server in the background.
+
+Alerts & Safety:
+
+An "SOS" button for emergencies.
+
+A section to receive and view real-time safety alerts pushed by INCOIS admins.
+
+Layer 2 & 3: Backend Ingestion & Analysis Engine (Target: Node.js Backend, Python for AI)
+Data Ingestion:
+
+Secure REST APIs to accept and store citizen reports from the mobile app.
+
+Services to ingest public-facing data from social media APIs (e.g., X/Twitter) based on hazard-related keywords and geographic markers.
+
+Analysis & Verification (The "Brain"):
+
+NLP Service: Use a model like IndicBERT to process social media posts. The service must identify hazard-related discussions, analyze sentiment (especially for panic or urgency), and extract location names.
+
+Media Verification: Use image hashing or similar techniques to check if a photo/video from a citizen report has been previously seen online, helping to flag potential misinformation.
+
+Dynamic Trust Scoring Algorithm: This is a crucial feature. Every incoming citizen report must be assigned a trust score (e.g., 1-100). The score should be calculated based on:
+
+The reporter's historical reliability (user reputation).
+
+Verification of geotag and timestamp.
+
+Correlation with other citizen reports from the same area.
+
+Correlation with social media sentiment spikes in that area.
+
+The result of the media verification check.
+
+Layer 4: INCOIS Admin Web Dashboard (Target: React or a similar modern framework)
+Main View: A large, interactive map (use Mapbox or Leaflet) should be the central element.
+
+Map Data Layers (Must be toggleable):
+
+Citizen Reports: Display as pins on the map, color-coded by hazard type. The opacity or size of the pin could represent the trust score. Clicking a pin shows the full report details (photos, description, score).
+
+Social Media Hotspots: Display as a heatmap layer, where intensity is based on the volume of hazard-related posts and high-urgency sentiment.
+
+Official Data: Allow for overlaying official INCOIS warning zones or weather data.
+
+Report Verification Workflow:
+
+A dedicated panel/queue showing all incoming citizen reports, sortable by time, location, and trust score.
+
+Admins must have clear actions for each report: "Verify" (marks it as a trusted event), "Escalate" (flags for urgent attention), or "Dismiss" (marks as false/irrelevant). Verified reports should update on the main map for all admins.
+
+Analytics Page:
+
+Dashboards with charts showing trends, such as report volume over time, a breakdown of hazard types, and sentiment analysis trends for specific regions.
+
+Layer 5: Response & Alerting System
+Alert Creation Tool: A simple interface for admins to create alert messages.
+
+Targeted Dissemination: Admins must be able to draw a geographic area on the map (a polygon or circle) and push the alert specifically to mobile app users within that zone.
+
+4. UI/UX Design Guidelines
+Theme: "Coastal Calm." Clean, professional, and trustworthy. Avoid clutter.
+
+Color Palette:
+
+Background: #F8F6F2
+
+Primary Text & UI Elements: #0D47A1 (Deep Blue)
+
+Accent Color (for buttons, highlights, map hotspots): #FFAB40 (Warm Orange)
+
+Card/Container Backgrounds: #FFFFFF
+
+Typography: Use a clean, sans-serif font like 'Inter' for excellent readability.
+
+Responsiveness: The web dashboard must be fully responsive and usable on desktops, tablets, and mobile browsers.
+
+5. Non-Functional Requirements
+Security: Implement strict role-based access control (RBAC). Ensure all data is encrypted both in transit (HTTPS) and at rest.
+
+Scalability: Build on a cloud platform (GCP or AWS) using a scalable architecture (e.g., microservices for the analysis engine) to handle high loads during major disaster events.
+
+Performance: The map dashboard must be highly performant, capable of rendering thousands of data points without lagging. The mobile app must be lightweight and fast.
